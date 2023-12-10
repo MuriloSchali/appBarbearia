@@ -1,30 +1,30 @@
 {
   "expo": {
-    "name": "appBarbearia",
+    "name": "Barbearia do Murilo",
     "slug": "appBarbearia",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "icon": "./assets/logo-inicial.png",
+    "userInterfaceStyle": "dark",
+   
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.app.teste",
+      "foregroundImage": "./assets/logo-inicial.png",
+      "backgroundColor": "#1E1E1E"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "foregroundImage": "./assets/logo-inicial.png",
+        "backgroundColor": "#1E1E1E"
+      },
+      "package": "com.app.teste"
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
+    "extra": {
+      "eas": {
+        "projectId": "709de6d0-d8e0-4fd1-80b6-ffb51a0d1ee3"
+      }
     }
   }
 }
