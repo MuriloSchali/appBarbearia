@@ -1,86 +1,100 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'
 import {
-  StyleSheet,
   View,
   Text,
   Image,
   StatusBar,
   TouchableOpacity,
-  ActivityIndicator
-} from 'react-native';
-import { WebView } from 'react-native-webview';
-import LottieView from 'lottie-react-native';
+  Animated,
+  StyleSheet,
+} from 'react-native'
+import { WebView } from 'react-native-webview'
 
-const URL = 'https://barbearia.systemmain.com.br/';
-const noConnectionImage = require('../assets/image-error.png');
+const URL = 'https://barbearia.systemmain.com.br/'
+const noConnectionImage = require('../assets/image-error.png')
 
 export default function HomePage() {
-  const [error, setError] = useState(false);
-  const [errorType, setErrorType] = useState(null);
+  const [error, setError] = useState(false)
+  const [animationComplete, setAnimationComplete] = useState(false)
+  const [fadeAnim] = useState(new Animated.Value(0))
 
   const handleWebViewLoad = () => {
-    console.log('Página Carregada !');
-  };
+    console.log('Página Carregada!')
+  }
 
   const handleWebViewError = (event) => {
-    setError(true);
-    setErrorType(event.nativeEvent.description);
-    console.error('Erro no carregamento do WebView:', event.nativeEvent);
-  };
+    setError(true)
+    console.error('Erro no carregamento do WebView:', event.nativeEvent)
+  }
 
   const handleTryAgain = () => {
-    setError(false);
-  };
+    setError(false)
+  }
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 4000,
+      useNativeDriver: true,
+    }).start(() => {
+      // Callback chamado quando a animação é concluída
+      setAnimationComplete(true)
+    })
+  }, [fadeAnim])
 
   return (
-
-    //Caso não haja conexão com a Internet ! 
     <View style={styles.container}>
-      <StatusBar barStyle="000000" />
       {error && (
         <View style={styles.errorContainer}>
+          <StatusBar barStyle="#A9A9A9" />
           <Image source={noConnectionImage} style={styles.errorImage} />
-          <Text style={styles.errorText}>Verifique sua conexão com a Internet !</Text>
-         
+          <Text style={styles.errorText}>
+            Verifique sua conexão com a Internet!
+          </Text>
           <TouchableOpacity
             onPress={handleTryAgain}
-            style={styles.tryAgainButton}>
-
+            style={styles.tryAgainButton}
+          >
             <Text style={styles.tryAgainButtonText}>Tentar Novamente</Text>
           </TouchableOpacity>
         </View>
       )}
 
-      {!error && (
+      {animationComplete && !error && (
         <View style={{ width: '100%', height: '100%' }}>
           <WebView
-  source={{ uri: URL }}
-  onLoad={handleWebViewLoad}
-  onError={handleWebViewError}
-  onHttpError={handleWebViewError}
-  startInLoadingState={true}
-
-  renderLoading={() => (
-    <View style={styles.loadingContainer}>
-      <StatusBar backgroundColor="#A9A9A9'" barStyle="dark-content" />
-      < ActivityIndicator size="large"  color="white" />
-    </View>
-  )}
-  
-  renderError={() => (
-    <View style={styles.errorContainer}>
-      <Text style={styles.errorText}>Erro ao carregar a página</Text>
-      <TouchableOpacity onPress={handleTryAgain} style={styles.tryAgainButton}>
-        <Text style={styles.tryAgainButtonText}>Tentar Novamente</Text>
-      </TouchableOpacity>
-    </View>
-  )}
-  
-/>
+            source={{ uri: URL }}
+            onLoad={handleWebViewLoad}
+            onError={handleWebViewError}
+            onHttpError={handleWebViewError}
+            startInLoadingState={true}
+            renderLoading={() => (
+              <View style={styles.loadingContainer}>
+                <StatusBar backgroundColor="#A9A9A9" barStyle="dark-content" />
+                <Animated.Image
+                  source={require('../assets/logo-inicial.png')}
+                  style={{ ...styles.image, opacity: fadeAnim }}
+                />
+              </View>
+            )}
+            renderError={() => (
+              <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>Erro ao carregar a página</Text>
+                <TouchableOpacity
+                  onPress={handleTryAgain}
+                  style={styles.tryAgainButton}
+                >
+                  <Text style={styles.tryAgainButtonText}>
+                    Tentar Novamente
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          />
         </View>
       )}
     </View>
-  );
+  )
 }
 const styles = StyleSheet.create({
   container: {
@@ -99,10 +113,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    width: '100%', // ou uma largura específica
+    height: '100%',
   },
   errorImage: {
-    width: 100, // Ajuste o tamanho conforme necessário
-    height: 100, // Ajuste o tamanho conforme necessário
+    width: 100, // ou uma largura específica
+    height: 100, // ou uma altura específica
     marginBottom: 20,
   },
   errorText: {
@@ -122,5 +138,9 @@ const styles = StyleSheet.create({
     color: '#1E1E1E',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  image: {
+    width: 'auto',
+    height: 'auto',
   },
 })
